@@ -1,2 +1,5 @@
 ﻿.vscode
 target
+myDB
+project
+derby.log

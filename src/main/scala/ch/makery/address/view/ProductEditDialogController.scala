@@ -10,13 +10,12 @@ import ch.makery.address.util.DateUtil._
 import scalafx.event.ActionEvent
 
 @sfxml
-class PersonEditDialogController (
+class ProductEditDialogController (
 
-    private val  productNameField : TextField,
-    private val   descriptionField : TextField,
-    private val priceField : TextField,
-    private val   birthdayField : TextField
-
+    private val productNameField : TextField,
+    private val descriptionField : TextField,
+    private val supplierField : TextField,
+    private val priceField : TextField
 ){
   var         dialogStage : Stage  = null
   private var _product     : Product = null
@@ -28,9 +27,9 @@ class PersonEditDialogController (
 
         productNameField.text = _product.productName.value
         descriptionField.text  = _product.description.value
-        priceField.text= _product.price.value.toString
-        birthdayField.text  = _product.date.value.asString
-        birthdayField.setPromptText("dd.mm.yyyy");
+        supplierField.text = _product.supplier.value
+        priceField.text= _product.unitPrice.value.toString
+    
   }
 
   def handleOk(action :ActionEvent){
@@ -38,8 +37,8 @@ class PersonEditDialogController (
      if (isInputValid()) {
         _product.productName <== productNameField.text
         _product.description    <== descriptionField.text
-        _product.price.value = priceField.getText().toInt
-        _product.date.value       = birthdayField.text.value.parseLocalDate;
+        _product.supplier <== supplierField.text
+        _product.unitPrice.value = priceField.getText().toDouble
 
         okClicked = true;
         dialogStage.close()
@@ -49,6 +48,7 @@ class PersonEditDialogController (
   def handleCancel(action :ActionEvent) {
         dialogStage.close();
   }
+  
   def nullChecking (x : String) = x == null || x.length == 0
 
   def isInputValid() : Boolean = {
@@ -58,21 +58,16 @@ class PersonEditDialogController (
       errorMessage += "No valid product name!\n"
     if (nullChecking(descriptionField.text.value))
       errorMessage += "No valid description!\n"
+    if (nullChecking(descriptionField.text.value))
+      errorMessage += "No valid supplier!\n"
     if (nullChecking(priceField.text.value))
-      errorMessage += "No valid postal code!\n"
+      errorMessage += "No valid price!\n"
     else {
       try {
-        Integer.parseInt(priceField.getText());
+        (priceField.getText().toDouble);
       } catch {
           case e : NumberFormatException =>
-            errorMessage += "No valid postal code (must be an integer)!\n"
-      }
-    }
-    if (nullChecking(birthdayField.text.value))
-      errorMessage += "No valid birtday!\n"
-    else {
-      if (!birthdayField.text.value.isValid) {
-          errorMessage += "No valid birthday. Use the format dd.mm.yyyy!\n";
+            errorMessage += "No valid price (must be a double)!\n"
       }
     }
 
