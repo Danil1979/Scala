@@ -28,7 +28,7 @@ class ProductOverviewController(
   
     private val priceLabel : Label,
 
-    ){
+    )extends Overview[Product]{
   // initialize Table View display contents model
   productTable.items = MainApp.productData
   // initialize columns's cell values
@@ -37,13 +37,13 @@ class ProductOverviewController(
   unitPriceColumn.cellValueFactory = {_.value.unitPrice}
 
   
-  showProductDetails(None);
+  showDetails(None);
   
   productTable.selectionModel().selectedItem.onChange(
-      (_, _, newValue) => if(newValue != null)showProductDetails(Some(newValue))
+      (_, _, newValue) => if(newValue != null)showDetails(Some(newValue))
   )
   
-  private def showProductDetails (product : Option[Product]) = {
+  def showDetails (product : Option[Product]) = {
     product match {
       case Some(product) =>
       // Fill the labels with info from the product object.
@@ -59,7 +59,7 @@ class ProductOverviewController(
       priceLabel.text= ""
     }    
   }
-  def handleNewProduct(action : ActionEvent) = {
+  def handleNewRecord(action : ActionEvent) = {
     val product = new Product(UUID.randomUUID().toString)
     val okClicked = MainApp.showProductEditDialog(product);
         if (okClicked) {
@@ -67,12 +67,12 @@ class ProductOverviewController(
             MainApp.productData += product
         }
   }
-  def handleEditProduct(action : ActionEvent) = {
+  def handleEditRecord(action : ActionEvent) = {
     val selectedProduct = productTable.selectionModel().selectedItem.value
     if (selectedProduct != null) {
         val okClicked = MainApp.showProductEditDialog(selectedProduct)
 
-        if (okClicked) showProductDetails(Some(selectedProduct))
+        if (okClicked) showDetails(Some(selectedProduct))
           Product.editRecord(selectedProduct)
     } else {
         // Nothing selected.
@@ -84,14 +84,22 @@ class ProductOverviewController(
         }.showAndWait()
     }
   }
-  def handleDeleteProduct(action : ActionEvent) = {
+  def handleDeleteRecord(action : ActionEvent) = {
       val selectedIndex = productTable.selectionModel().selectedIndex.value
       if (selectedIndex >= 0) {
-
-        Product.deleteRecord(productTable.getSelectionModel().getSelectedItem())
-        productTable.items().remove(selectedIndex)
-
-
+        println("hello")
+        val count = MainApp.transactionData.filter{_.product.objectUid.toString == productTable.getSelectionModel().getSelectedItem().objectUid.toString}
+        if( count.length > 0){
+          val alert = new Alert(Alert.AlertType.Warning){
+          initOwner(MainApp.stage)
+          title       = "Selected Product cannot be deleted"
+          headerText  = "Warning"
+          contentText = "There is currently a transaction record using this Product, please delete the transaction first before deleting this."
+        }.showAndWait()
+        }else{
+          Product.deleteRecord(productTable.getSelectionModel().getSelectedItem())
+          productTable.items().remove(selectedIndex)
+        }
       } 
    }
    def handleSwapMenu() = {

@@ -7,7 +7,7 @@ import scalikejdbc._
 import scala.util.{ Try, Success, Failure }
 import accountingApp.MainApp
 
-class TransactionRecord(transactionID : String) extends TableObject(transactionID) {
+class TransactionRecord(transactionID : String) extends ModelObject(transactionID) {
 	var product : Product = null
 
 	var quantity : ObjectProperty[Integer] = ObjectProperty[Integer](0)
@@ -27,7 +27,7 @@ class TransactionRecord(transactionID : String) extends TableObject(transactionI
 	  }
 
 }
-object TransactionRecord extends DatabaseTable[TransactionRecord]  {
+object TransactionRecord extends ModelTrait[TransactionRecord]  {
 	def apply(transactionID : String, productID : String, quantityI : Int, dateOfPurchaseS :String, addedOnS : String): TransactionRecord = {
     new TransactionRecord(transactionID){
       product = (MainApp.productData.find{_.objectUid.toString == productID}).get

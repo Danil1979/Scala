@@ -7,7 +7,7 @@ import scalafx.collections.ObservableBuffer
 import scalafx.collections.ObservableBuffer.{Add, Remove}
 import scalafx.event.subscriptions.Subscription
 
-trait DatabaseTable[T <: TableObject] extends SQLSyntaxSupport[T] {
+trait ModelTrait[T <: ModelObject] extends SQLSyntaxSupport[T] {
 
   implicit val session: AutoSession.type = AutoSession
 

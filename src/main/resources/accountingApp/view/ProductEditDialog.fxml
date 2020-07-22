@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="263.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.makery.address.view.ProductEditDialogController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="263.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="accountingApp.view.ProductEditDialogController">
    <children>
       <GridPane layoutX="18.0" layoutY="21.0" prefHeight="220.0" prefWidth="561.0" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>

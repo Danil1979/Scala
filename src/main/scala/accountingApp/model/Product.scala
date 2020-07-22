@@ -4,7 +4,7 @@ import scalafx.beans.property.{StringProperty, ObjectProperty, IntegerProperty}
 import java.time.LocalDate;
 import scalikejdbc._
 
-class Product(productID : String) extends TableObject(productID){
+class Product(productID : String) extends ModelObject(productID){
   var productName  = new StringProperty() 
 	var description     = new StringProperty("some description")
 	var supplier = new StringProperty("some Supplier Name")
@@ -13,7 +13,7 @@ class Product(productID : String) extends TableObject(productID){
 		productName.value
 	} 
 }
-object Product extends DatabaseTable[Product]{
+object Product extends ModelTrait[Product]{
   def apply(productID : String, productNameS : String, descriptionS : String, supplierS : String, unitPriceD : Double): Product = {
     new Product(productID){
       productName.value = productNameS

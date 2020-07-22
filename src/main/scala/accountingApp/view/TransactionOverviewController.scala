@@ -29,6 +29,8 @@ class TransactionOverviewController(
     private val productNameLabel : Label,
     
     private val descriptionLabel : Label,
+
+    private val supplierLabel : Label, 
   
     private val priceLabel : Label,
 
@@ -38,7 +40,7 @@ class TransactionOverviewController(
 
     private val  dateLabel : Label  
     
-    ) {
+    ) extends Overview[TransactionRecord]{
   // initialize Table View display contents model
   transactionTable.items = MainApp.transactionData
   // initialize columns's cell values
@@ -48,19 +50,20 @@ class TransactionOverviewController(
   dateColumn.cellValueFactory = {_.value.dateOfPurchase}
   addedOnColumn.cellValueFactory =  {_.value.addedOn}
   
-  showTransactionDetails(None);
+  showDetails(None);
   
   transactionTable.selectionModel().selectedItem.onChange(
-      (_, _, newValue) => if(newValue != null) showTransactionDetails(Some(newValue))
+      (_, _, newValue) => if(newValue != null) showDetails(Some(newValue))
   )
   
-  private def showTransactionDetails (transaction : Option[TransactionRecord]) = {
+   def showDetails (transaction : Option[TransactionRecord]) : Unit = {
     transaction match {
       case Some(transaction) =>
       // Fill the labels with info from the TransactionRecord object.
 
       productNameLabel.text <== transaction.product.productName
       descriptionLabel.text  <== transaction.product.description
+      supplierLabel.text  <== transaction.product.supplier
       priceLabel.text = transaction.product.unitPrice.value.toString
       quantityLabel.text = transaction.quantity.value.toString
       totalPriceLabel.text = transaction.totalPrice.value.toString
@@ -70,12 +73,13 @@ class TransactionOverviewController(
       productNameLabel.text = ""
       descriptionLabel.text  = ""
       priceLabel.text= ""
+      supplierLabel.text = ""
       dateLabel.text  = ""
       quantityLabel.text = ""
       totalPriceLabel.text = ""
     }    
   }
-  def handleNewTransaction(action : ActionEvent) = {
+  def handleNewRecord(action : ActionEvent) : Unit = {
     val transaction = new TransactionRecord(UUID.randomUUID().toString)
     val okClicked = MainApp.showTransactionEditDialog(transaction);
         if (okClicked) {
@@ -83,12 +87,12 @@ class TransactionOverviewController(
             MainApp.transactionData += transaction
         }
   }
-  def handleEditTransaction(action : ActionEvent) = {
+  def handleEditRecord(action : ActionEvent) : Unit= {
     val selectedTransaction = transactionTable.selectionModel().selectedItem.value
     if (selectedTransaction != null) {
         val okClicked = MainApp.showTransactionEditDialog(selectedTransaction)
 
-        if (okClicked) showTransactionDetails(Some(selectedTransaction))
+        if (okClicked) showDetails(Some(selectedTransaction))
         TransactionRecord.editRecord(selectedTransaction)
         transactionTable.refresh()
 
@@ -102,7 +106,7 @@ class TransactionOverviewController(
         }.showAndWait()
     }
   }
-  def handleDeleteTransaction(action : ActionEvent) = {
+  def handleDeleteRecord(action : ActionEvent) : Unit = {
       val selectedIndex = transactionTable.selectionModel().selectedIndex.value
       if (selectedIndex >= 0) {
           TransactionRecord.deleteRecord(transactionTable.getSelectionModel().getSelectedItem())
