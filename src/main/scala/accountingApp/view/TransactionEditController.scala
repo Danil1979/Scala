@@ -1,12 +1,12 @@
-package ch.makery.address.view
+package accountingApp.view
 
-import ch.makery.address.model.{Transaction,Product}
-import ch.makery.address.MainApp
+import accountingApp.model.{TransactionRecord,Product}
+import accountingApp.MainApp
 import scalafx.scene.control.{TextField, TableColumn, Label, Alert, ChoiceBox}
 import scalafxml.core.macros.sfxml
 import scalafx.stage.Stage
 import scalafx.Includes._
-import ch.makery.address.util.DateUtil._
+import accountingApp.util.DateUtil._
 import scalafx.event.ActionEvent
 
 @sfxml
@@ -21,25 +21,25 @@ class TransactionEditDialogController (
 
 ){
   var         dialogStage : Stage  = null
-  private var _transaction     : Transaction = null
+  private var _transaction     : TransactionRecord = null
   var         okClicked            = false
-  handleChoiceBox()
+  handleChoiceBox
 
   def transaction = _transaction
-  def transaction_=(x : Transaction) {
+  def transaction_=(x : TransactionRecord) {
         _transaction = x
         choiceBox.selectionModel().select(_transaction.product)
         quantityField.text= _transaction.quantity.value.toString
         totalPriceField.text= _transaction.totalPrice.value.toString
-        dateField.text  = _transaction.date.value.asString
+        dateField.text  = _transaction.dateOfPurchase.value.toString
         dateField.setPromptText("dd.mm.yyyy");
   }
-  def handleChoiceBox() : Unit = {
+  def handleChoiceBox : Unit = {
 
     choiceBox.getItems().removeAll(choiceBox.getItems())
     MainApp.productData.foreach(data => choiceBox.getItems().add(data))
     choiceBox.selectionModel().selectedItem.onChange(
-      choiceBoxSelection
+    choiceBoxSelection
   )
   def choiceBoxSelection : Unit = {
     descriptionField.text = choiceBox.selectionModel().selectedItem.value.description.value
@@ -52,11 +52,10 @@ class TransactionEditDialogController (
   def handleOk(action :ActionEvent){
 
      if (isInputValid()) {
-        // _transaction.productName = choiceBox.selectionModel().selectedItem.value.productName
         _transaction.product = choiceBox.selectionModel().selectedItem.value
         _transaction.quantity.value = quantityField.getText().toInt
         calculateTotalPrice
-        _transaction.date.value = dateField.text.value.parseLocalDate;
+        _transaction.dateOfPurchase.value = dateField.text.value;
 
         okClicked = true;
         dialogStage.close()
@@ -71,20 +70,11 @@ class TransactionEditDialogController (
 
   def isInputValid() : Boolean = {
     var errorMessage = ""
-    if (nullChecking(choiceBox.getValue().toString)){
-      errorMessage += "No valid product!(If there are no product to choose, please add a new product from the Product Menu first.)\n"
+    try{
+      choiceBox.selectionModel().selectedItem.value.productName.value
     }
-    if (nullChecking(descriptionField.text.value))
-      errorMessage += "No valid description!\n"
-    if (nullChecking(priceField.text.value))
-      errorMessage += "No valid price!\n"
-    else {
-      try {
-        (priceField.getText().toDouble);
-      } catch {
-          case e : NumberFormatException =>
-            errorMessage += "No valid price (must be a double)!\n"
-      }
+    catch {
+      case e: NullPointerException => errorMessage += "No valid product! \n(If there are no product to choose, please add a new product from the Product Menu first.)\n"
     }
     if (nullChecking(quantityField.text.value))
       errorMessage += "No valid quantity!\n"

@@ -1,11 +1,11 @@
-package ch.makery.address.view
+package accountingApp.view
 
-import ch.makery.address.model.Product
-import ch.makery.address.MainApp
+import accountingApp.model.Product
+import accountingApp.MainApp
 import scalafx.scene.control.{TableView, TableColumn, Label, Alert}
 import scalafxml.core.macros.sfxml
 import scalafx.beans.property.{StringProperty} 
-import ch.makery.address.util.DateUtil._
+import accountingApp.util.DateUtil._
 import scalafx.Includes._
 import scalafx.event.ActionEvent
 import java.util.UUID
@@ -29,7 +29,7 @@ class ProductOverviewController(
     private val priceLabel : Label,
 
     ){
-          // initialize Table View display contents model
+  // initialize Table View display contents model
   productTable.items = MainApp.productData
   // initialize columns's cell values
   productNameColumn.cellValueFactory = {_.value.productName}
@@ -40,14 +40,14 @@ class ProductOverviewController(
   showProductDetails(None);
   
   productTable.selectionModel().selectedItem.onChange(
-      (_, _, newValue) => showProductDetails(Some(newValue))
+      (_, _, newValue) => if(newValue != null)showProductDetails(Some(newValue))
   )
   
   private def showProductDetails (product : Option[Product]) = {
     product match {
       case Some(product) =>
       // Fill the labels with info from the product object.
-      productNameLabel.text <== product.productName
+      productNameLabel.text = product.productName.value
       descriptionLabel.text  <== product.description
       supplierLabel.text <== product.supplier
       priceLabel.text = product.unitPrice.value.toString
@@ -63,6 +63,7 @@ class ProductOverviewController(
     val product = new Product(UUID.randomUUID().toString)
     val okClicked = MainApp.showProductEditDialog(product);
         if (okClicked) {
+            Product.insertRecord(product)
             MainApp.productData += product
         }
   }
@@ -72,7 +73,7 @@ class ProductOverviewController(
         val okClicked = MainApp.showProductEditDialog(selectedProduct)
 
         if (okClicked) showProductDetails(Some(selectedProduct))
-
+          Product.editRecord(selectedProduct)
     } else {
         // Nothing selected.
         val alert = new Alert(Alert.AlertType.Warning){
@@ -86,7 +87,11 @@ class ProductOverviewController(
   def handleDeleteProduct(action : ActionEvent) = {
       val selectedIndex = productTable.selectionModel().selectedIndex.value
       if (selectedIndex >= 0) {
-          productTable.items().remove(selectedIndex);
+
+        Product.deleteRecord(productTable.getSelectionModel().getSelectedItem())
+        productTable.items().remove(selectedIndex)
+
+
       } 
    }
    def handleSwapMenu() = {

@@ -1,4 +1,4 @@
-package ch.makery.address.model
+package accountingApp.model
 import java.util.UUID
 
 abstract class  TableObject(uid: String) {

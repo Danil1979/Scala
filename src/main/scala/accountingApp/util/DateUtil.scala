@@ -1,15 +1,14 @@
-package ch.makery.address.util
+package accountingApp.util
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.{LocalDate,LocalDateTime}
+import java.time.format.{DateTimeFormatter,DateTimeParseException};
 
 object DateUtil {
-  val DATE_PATTERN = "dd.MM.yyyy"
-  val DATE_FORMATTER =  DateTimeFormatter.ofPattern(DATE_PATTERN)
-  
-  implicit class DateFormater (val date : LocalDate){
 
+  val DATE_FORMATTER : DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+  val DATE_TIME_FORMATTER : DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+  implicit class DateFormater (val date : LocalDate){
      /**
      * Returns the given date as a well formatted String. The above defined 
      * {@link DateUtil#DATE_PATTERN} is used.
@@ -22,6 +21,21 @@ object DateUtil {
             return null;
         }
         return DATE_FORMATTER.format(date);
+    }
+  }
+    implicit class DateTimeFormater (val date : LocalDateTime){
+     /**
+     * Returns the given date as a well formatted String. The above defined 
+     * {@link DateUtil#DATE_PATTERN} is used.
+     * 
+     * @param date the date to be returned as a string
+     * @return formatted string
+     */
+     def asString : String = {
+        if (date == null) {
+            return null;
+        }
+        return DATE_TIME_FORMATTER.format(date);
     }
   }
   implicit class StringFormater (val data : String) {

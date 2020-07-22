@@ -27,32 +27,32 @@
 //       }
 	  
 //   	}
-// 	def save() : Try[Int] = {
-// 		if (!(isExist)) {
-// 			Try(DB autoCommit { implicit session => 
-// 				sql"""
-// 					insert into transaction (product, transactionName,
-// 						quantity, totalPrice, date, addedOn) values 
-// 						(${product}, ${transactionName.value}, ${quantity.value},
-// 							${totalPrice.value},${date.value.asString}, ${addedOn.value.asString})
-// 				""".update.apply()
-// 			})
-// 		} else {
-// 			Try(DB autoCommit { implicit session => 
-// 				sql"""
-// 				update transaction 
-// 				set 
-// 				product  = ${product} ,
-// 				transactionName   = ${transactionName.value},
-// 				quantity     = ${quantity.value},
-// 				totalPrice = ${totalPrice.value},
-// 				date       = ${date.value.asString},
-// 				addedOn       = ${addedOn.value.asString}
-// 				 where addedOn = ${addedOn.value.asString}
+	// def save() : Try[Int] = {
+	// 	if (!(isExist)) {
+	// 		Try(DB autoCommit { implicit session => 
+	// 			sql"""
+	// 				insert into transaction (product, transactionName,
+	// 					quantity, totalPrice, date, addedOn) values 
+	// 					(${product}, ${transactionName.value}, ${quantity.value},
+	// 						${totalPrice.value},${date.value.asString}, ${addedOn.value.asString})
+	// 			""".update.apply()
+	// 		})
+	// 	} else {
+	// 		Try(DB autoCommit { implicit session => 
+	// 			sql"""
+	// 			update transaction 
+	// 			set 
+	// 			product  = ${product} ,
+	// 			transactionName   = ${transactionName.value},
+	// 			quantity     = ${quantity.value},
+	// 			totalPrice = ${totalPrice.value},
+	// 			date       = ${date.value.asString},
+	// 			addedOn       = ${addedOn.value.asString}
+	// 			 where addedOn = ${addedOn.value.asString}
 
-// 				""".update.apply()
-// 			})
-// 		}
+	// 			""".update.apply()
+	// 		})
+	// 	}
 			
 // 	}
 // 	def delete() : Try[Int] = {

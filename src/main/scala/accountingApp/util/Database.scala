@@ -1,6 +1,6 @@
-package ch.makery.address.util
+package accountingApp.util
 import scalikejdbc._
-import ch.makery.address.model.Transaction
+import accountingApp.model.TransactionRecord
 
 
 object Database  {
@@ -11,7 +11,7 @@ object Database  {
   Class.forName(derbyDriverClassname)
 
   def connect(): Unit = {
-  ConnectionPool.singleton(dbURL, "me", "mine")
+  ConnectionPool.singleton(dbURL, "", "")
   }
 
   def disconnect(): Unit = {

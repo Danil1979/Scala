@@ -1,4 +1,4 @@
-package ch.makery.address
+package accountingApp
 
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
@@ -7,29 +7,23 @@ import scalafx.Includes._
 import scalafxml.core.{NoDependencyResolver, FXMLView, FXMLLoader}
 import javafx.{scene => jfxs}
 import scalafx.collections.{ObservableBuffer}
-import ch.makery.address.model.{Transaction, Product}
-import ch.makery.address.util.Database
-import ch.makery.address.view.{TransactionEditDialogController, ProductEditDialogController}
+import accountingApp.model.{TransactionRecord, Product}
+import accountingApp.util.Database
+import accountingApp.view.{TransactionEditDialogController, ProductEditDialogController}
 import scalafx.stage.{ Stage, Modality }
 import scalafx.beans.property.ObjectProperty
-import java.util.UUID
+
 object MainApp extends JFXApp {
   // the data as an observable list of Transactions
   Database.connect()
-  val transactionData = new ObservableBuffer[Transaction]()
-    // transactionData += new Transaction("Hans")
-    // transactionData += new Transaction("Ruth" )
-    // transactionData += new Transaction("Heinz")
-    // transactionData += new Transaction("Corneli")
-    // transactionData += new Transaction("Werner")
-    // transactionData += new Transaction("Lydia")
-    // transactionData += new Transaction("Anna" )
-    // transactionData += new Transaction("Stefan")
-    // transactionData += new Transaction("Martin")
-
   val productData = new ObservableBuffer[Product]()
-    productData += new Product(UUID.randomUUID().toString)
+  productData ++= Product.retrieveData 
 
+  val transactionData = new ObservableBuffer[TransactionRecord]()
+  transactionData ++= TransactionRecord.retrieveData
+
+
+  
   // transform path of RootLayout.fxml to URI for resource location.
   val rootResource = getClass.getResourceAsStream("view/RootLayout.fxml")
   // initialize the loader object.
@@ -55,7 +49,7 @@ object MainApp extends JFXApp {
     this.transactionData.foreach(data => data.totalPrice = ObjectProperty[Double](data.calculateTotalPrice))
   } 
   
-   def showTransactionEditDialog(transaction: Transaction): Boolean = {
+   def showTransactionEditDialog(transaction: TransactionRecord): Boolean = {
     val resource = getClass.getResourceAsStream("view/TransactionEditDialog.fxml")
     val loader = new FXMLLoader(null, NoDependencyResolver)
     loader.load(resource);
@@ -63,7 +57,7 @@ object MainApp extends JFXApp {
     val control = loader.getController[TransactionEditDialogController#Controller]
 
     val dialog = new Stage() {
-      initModality(Modality.APPLICATION_MODAL)
+      initModality(Modality.ApplicationModal)
       initOwner(stage)
       scene = new Scene {
         root = roots2
@@ -82,7 +76,7 @@ object MainApp extends JFXApp {
       val control = loader.getController[ProductEditDialogController#Controller]
 
       val dialog = new Stage() {
-        initModality(Modality.APPLICATION_MODAL)
+        initModality(Modality.ApplicationModal)
         initOwner(stage)
         scene = new Scene {
           root = roots2

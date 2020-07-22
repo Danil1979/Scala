@@ -1,12 +1,12 @@
-package ch.makery.address.view
+package accountingApp.view
 
-import ch.makery.address.model.Product
-import ch.makery.address.MainApp
+import accountingApp.model.Product
+import accountingApp.MainApp
 import scalafx.scene.control.{TextField, TableColumn, Label, Alert}
 import scalafxml.core.macros.sfxml
 import scalafx.stage.Stage
 import scalafx.Includes._
-import ch.makery.address.util.DateUtil._
+import accountingApp.util.DateUtil._
 import scalafx.event.ActionEvent
 
 @sfxml
